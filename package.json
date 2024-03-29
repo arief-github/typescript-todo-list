@@ -1,0 +1,8 @@
+{
+  "name": "todo-list",
+  "version": "1.0.0",
+  "description": "code for life",
+  "main": "index.js",
+  "author": "arief",
+  "license": "MIT"
+}
