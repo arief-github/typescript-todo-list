@@ -4,5 +4,12 @@
   "description": "code for life",
   "main": "index.js",
   "author": "arief",
-  "license": "MIT"
+  "license": "MIT",
+  "type": "module",
+  "dependencies": {
+    "inquirer": "9.1.4"
+  },
+  "devDependencies": {
+    "@types/inquirer": "9.0.3"
+  }
 }

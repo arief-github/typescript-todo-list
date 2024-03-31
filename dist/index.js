@@ -1,14 +1,14 @@
-"use strict";
-Object.defineProperty(exports, "__esModule", { value: true });
-const todoItem_1 = require("./todoItem");
-const todoCollection_1 = require("./todoCollection");
+import { TodoItem } from "./todoItem.js";
+import { TodoCollection } from "./todoCollection.js";
+import inquirer from 'inquirer';
 let todos = [
-    new todoItem_1.TodoItem(1, "Buy Flowers"),
-    new todoItem_1.TodoItem(2, "Get Dog Food"),
-    new todoItem_1.TodoItem(3, "Sew Your Wardrobe", true),
-    new todoItem_1.TodoItem(4, "Feed Your Cat", true)
+    new TodoItem(1, "Buy Flowers"),
+    new TodoItem(2, "Get Dog Food", true),
+    new TodoItem(3, "Sew Your Wardrobe", true),
+    new TodoItem(4, "Feed Your Cat", true)
 ];
-let collection = new todoCollection_1.TodoCollection("arief", todos);
+let collection = new TodoCollection("arief", todos);
+let showComplete = true;
 console.clear();
 console.log(`${collection.userName}'s Todo List`);
 // let newId: number = collection.addTodo("Go for run");
@@ -16,5 +16,91 @@ console.log(`${collection.userName}'s Todo List`);
 // todoItem.printDetails()
 // collection.addTodo(todoItem);
 // collection.removeComplete();
-console.log(`${collection.userName}'s Todo List` + `(${collection.getItemCounts().incomplete} items left uncomplete)`);
-collection.getTodoItems(true).forEach(item => item.printDetails());
+function displayTodoList() {
+    console.log(`${collection.userName}'s Todo List` + `(${collection.getItemCounts().incomplete} items left uncomplete)`);
+    // collection.getTodoItems(true).forEach(item => item.printDetails())
+    collection.getTodoItems(showComplete).forEach(item => item.printDetails());
+}
+;
+var Commands;
+(function (Commands) {
+    Commands["Add"] = "Add";
+    Commands["Quit"] = "Quit";
+    Commands["Toggle"] = "Show/Hide Complete";
+    Commands["Complete"] = "Complete Task";
+    Commands["Purge"] = "Remove Completed Tasks";
+})(Commands || (Commands = {}));
+/**
+ * Prompts the user to choose an option from a list of commands.
+ *
+ * @return {void} This function does not return anything.
+ */
+function promptUser() {
+    console.clear();
+    displayTodoList();
+    inquirer.prompt({
+        type: "list",
+        name: "command",
+        message: "choose option",
+        choices: Object.values(Commands),
+    }).then((answers) => {
+        switch (answers["command"]) {
+            case Commands.Toggle:
+                showComplete = !showComplete;
+                promptUser();
+                break;
+            case Commands.Add:
+                promptAdd();
+                break;
+            case Commands.Complete:
+                if (collection.getItemCounts().incomplete > 0) {
+                    promptComplete();
+                }
+                else {
+                    promptUser();
+                }
+                break;
+            case Commands.Purge:
+                collection.removeComplete();
+                promptUser();
+                break;
+        }
+    });
+}
+/**
+ * Prompts the user to enter a task and adds it to the collection.
+ *
+ * @return {void} This function does not return anything.
+ */
+function promptAdd() {
+    console.clear();
+    inquirer.prompt({
+        type: "input",
+        name: "add",
+        message: "Enter Task => "
+    }).then(answer => {
+        if (answer['add'] !== '') {
+            collection.addTodo(answer['add']);
+        }
+        promptUser();
+    });
+}
+function promptComplete() {
+    console.clear();
+    inquirer.prompt({
+        type: 'checkbox',
+        name: 'complete',
+        message: 'Mark Task Complete',
+        choices: collection.getTodoItems(showComplete).map(item => ({
+            name: item.task,
+            value: item.id,
+            checked: item.complete
+        }))
+    }).then(answer => {
+        let completedTask = answer['completed'];
+        collection.getTodoItems(true).forEach(item => collection.markComplete(item.id, completedTask.find(id => id === item.id) != undefined));
+        promptUser();
+    });
+}
+// call the function
+promptUser();
