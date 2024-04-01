@@ -39,6 +39,50 @@ enum Commands {
     Purge = "Remove Completed Tasks",
 }
 
+
+/**
+ * Prompts the user to enter a task and adds it to the collection.
+ *
+ * @return {void} This function does not return anything.
+ */
+
+function promptAdd(): void {
+    console.clear();
+
+    inquirer.prompt({
+        type: "input",
+        name: "add",
+        message: "Enter Task => "
+    }).then(answer => {
+        if(answer['add'] !== '') {
+            collection.addTodo(answer['add'])
+        }
+
+        promptUser()
+    })
+}
+
+function promptComplete(): void {
+    console.clear();
+
+    inquirer.prompt({
+        type: 'checkbox',
+        name: 'completed',
+        message: 'Mark Task Complete',
+        choices: collection.getTodoItems(showComplete).map(item => ({
+            name: item.task,
+            value: item.id,
+            checked: item.complete
+        }))
+    }).then(answer => {
+        let completedTask = answer['completed'] as number[];
+
+        collection.getTodoItems(true).forEach(item => collection.markComplete(item.id, completedTask.find(id => id === item.id) != undefined));
+
+        promptUser();
+    })
+}
+
 /**
  * Prompts the user to choose an option from a list of commands.
  *
@@ -76,50 +120,6 @@ function promptUser(): void {
         }
     })
 }
-
-/**
- * Prompts the user to enter a task and adds it to the collection.
- *
- * @return {void} This function does not return anything.
- */
-
-function promptAdd(): void {
-    console.clear();
-
-    inquirer.prompt({
-        type: "input",
-        name: "add",
-        message: "Enter Task => "
-    }).then(answer => {
-        if(answer['add'] !== '') {
-            collection.addTodo(answer['add'])
-        }
-
-        promptUser()
-    })
-}
-
-function promptComplete(): void {
-    console.clear();
-
-    inquirer.prompt({
-        type: 'checkbox',
-        name: 'complete',
-        message: 'Mark Task Complete',
-        choices: collection.getTodoItems(showComplete).map(item => ({
-            name: item.task,
-            value: item.id,
-            checked: item.complete
-        }))
-    }).then(answer => {
-        let completedTask = answer['completed'] as number[];
-
-        collection.getTodoItems(true).forEach(item => collection.markComplete(item.id, completedTask.find(id => id === item.id) != undefined));
-
-        promptUser();
-    })
-}
-
 
 // call the function
 promptUser();
