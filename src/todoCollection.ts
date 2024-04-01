@@ -7,7 +7,7 @@ type ItemCounts = {
 
 export class TodoCollection {
     private nextId: number = 1;
-    private itemMap = new Map<number, TodoItem>();
+    protected itemMap = new Map<number, TodoItem>();
 
     /**
      * Constructor for creating a new instance of the class.

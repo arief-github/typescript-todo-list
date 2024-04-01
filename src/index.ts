@@ -1,6 +1,7 @@
 import { TodoItem } from "./todoItem.js";
 import { TodoCollection } from "./todoCollection.js";
 import inquirer from 'inquirer';
+import { JsonTodoCollection } from "./jsonTodoCollection.js";
 
 let todos: TodoItem[] = [
     new TodoItem(1, "Buy Flowers"),
@@ -9,7 +10,7 @@ let todos: TodoItem[] = [
     new TodoItem(4, "Feed Your Cat", true)
 ];
 
-let collection: TodoCollection = new TodoCollection("arief", todos);
+let collection: TodoCollection = new JsonTodoCollection("arief", todos);
 let showComplete = true;
 
 console.clear();

@@ -1,13 +1,13 @@
 import { TodoItem } from "./todoItem.js";
-import { TodoCollection } from "./todoCollection.js";
 import inquirer from 'inquirer';
+import { JsonTodoCollection } from "./jsonTodoCollection.js";
 let todos = [
     new TodoItem(1, "Buy Flowers"),
     new TodoItem(2, "Get Dog Food", true),
     new TodoItem(3, "Sew Your Wardrobe", true),
     new TodoItem(4, "Feed Your Cat", true)
 ];
-let collection = new TodoCollection("arief", todos);
+let collection = new JsonTodoCollection("arief", todos);
 let showComplete = true;
 console.clear();
 console.log(`${collection.userName}'s Todo List`);
